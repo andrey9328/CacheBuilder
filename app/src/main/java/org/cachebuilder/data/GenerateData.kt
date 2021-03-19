@@ -18,8 +18,12 @@ object GenerateData {
 
     fun subscribeSelectUpdate(): Flow<Int> {
         return flow {
-            delay(16000)
+            delay(3000)
             emit(2)
+            delay(3000)
+            emit(1)
+            delay(3000)
+            emit(3)
         }
     }
 

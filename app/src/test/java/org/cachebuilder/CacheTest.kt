@@ -5,8 +5,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.cachebuilder.cache.CacheBuilder
-import org.cachebuilder.cache.CacheStrategy
-import org.cachebuilder.cache.ECacheStrategy
 import org.cachebuilder.cache.ICacheBuilder
 import org.junit.Assert.*
 import org.junit.Test

@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel.dataLive.observe(this, {
-            it.forEach { item -> Log.i("City", item.toString()) }
+            Log.i("City", "isSource - " + it.isSource.toString())
+            it.data.forEach { item -> Log.i("City", item.toString()) }
             Log.i("City", System.currentTimeMillis().toString())
             Log.i("City", "__________________________________")
         })

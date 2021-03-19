@@ -3,12 +3,11 @@ package org.cachebuilder.cache
 import kotlinx.coroutines.flow.Flow
 
 interface ICacheBuilder<T> {
-    fun getData(
-            sources: List<ICacheSource<*, T>> = emptyList(),
-            key: String? = null,
-            strategy: CacheStrategy<T> = CacheStrategy(ECacheStrategy.DEFAULT),
-            action: suspend () -> T
-    ): Flow<T>
+    fun getData(builder: CacheBuilderCreate<T>): Flow<CacheBuilderState<T>>
+
+    fun addData(builder: CacheBuilderCreate<T>, action: ((add: T, current: T?) -> T)): Flow<CacheBuilderState<T>>
+
+    fun updateData(builder: CacheBuilderCreate<T>): Flow<CacheBuilderState<T>>
 
     fun getDataByKey(key: String?): T?
 

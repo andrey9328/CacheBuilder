@@ -5,39 +5,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import org.cachebuilder.cache.CacheBuilder
-import org.cachebuilder.cache.CacheStrategy
-import org.cachebuilder.cache.ECacheStrategy
+import org.cachebuilder.cache.*
 import org.cachebuilder.data.City
 import org.cachebuilder.data.GenerateData
+import org.cachebuilder.sources.SelectSource
 
 @ExperimentalCoroutinesApi
 class MainViewModel : ViewModel() {
-    val dataLive = MutableLiveData<List<City>>()
+    val dataLive = MutableLiveData<CacheBuilderState<List<City>>>()
     private val cache = CacheBuilder<List<City>>()
     private val job = Job()
 
     fun getCity() {
-        job.cancelChildren()
+        val source = listOf(SelectSource())
         viewModelScope.launch(Dispatchers.Default + job) {
-            cache.getData { GenerateData.getCityList() }.collect { dataLive.postValue(it) }
+            cache.getData(CacheBuilderCreate(
+                sources = source,
+                action = { GenerateData.getCityList() }
+            )).collect { dataLive.postValue(it) }
         }
     }
 
     fun getCityAdd() {
         job.cancelChildren()
+        val source = listOf(SelectSource())
         viewModelScope.launch(Dispatchers.Default + job) {
-            val strategy = CacheStrategy<List<City>>(
-                    type = ECacheStrategy.ADD
-            ) { new, current ->
+            cache.addData(
+                CacheBuilderCreate(sources = source, action = { GenerateData.getCityList() })
+            ) { add, current ->
                 val mergeList = arrayListOf<City>()
                 mergeList.addAll(current ?: emptyList())
-                mergeList.addAll(new)
+                mergeList.addAll(add)
                 mergeList.toList()
-            }
-
-            cache.getData(strategy =  strategy) {
-                GenerateData.getCityList() }.collect { dataLive.postValue(it) }
+            }.collect { dataLive.postValue(it) }
         }
     }
 }
